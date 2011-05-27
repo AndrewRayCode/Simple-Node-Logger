@@ -12,10 +12,12 @@
 
 ### Fun Facts:
 Log multiple objects in one call!
+
     log.warn('hello', [1,2,3]);
     May 15:22:33 - WARN: hello 1,2,3
 
 Objects are auto-inspected
+
     log.warn({foo: 'bar', duck: 'pie'});
     27 May 15:22:53 - WARN: { foo: 'bar', duck: 'pie' }
  
