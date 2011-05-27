@@ -2,7 +2,7 @@
   "name": "simple-logger",
   "author": "Andrew Ray",
   "description": "A simple logging package to colorize logging standard output",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "http://andrewray.me",
   "engines" : {"node" : ">=0.4.0"}, 
   "main" : "index.js",
