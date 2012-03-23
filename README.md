@@ -38,12 +38,12 @@ Can be marked as sync (blockingly writes to stdout/err) or async (uses console.l
 Log multiple objects in one call!
 
     log.warn('hello', [1,2,3]);
-    May 15:22:33 - WARN: hello 1,2,3
+    WARN: hello 1,2,3
 
 Objects are auto-inspected
 
     log.warn({foo: 'bar', duck: 'pie'});
-    27 May 15:22:53 - WARN: { foo: 'bar', duck: 'pie' }
+    WARN: { foo: 'bar', duck: 'pie' }
  
 ### Neato: 
 ![Screenshot of colorful logger output](http://andrewray.me/stuff/log-colors.png)
