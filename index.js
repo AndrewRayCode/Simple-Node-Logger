@@ -1,36 +1,58 @@
-var sys    = require('sys'),
-    logLevels = ['silent', 'error', 'warn', 'info', 'debug'],
+var sys = require('util'),
+    logLevels = ['silent', 'info', 'warn', 'error'],
+    permissions = {},
     logger = module.exports,
     // Shell color escape codes
     escr ="",
     reset = escr+'[0m',
     // Color array matches logLevels array, starting from 'error'
-    colors = [escr+'[31m', escr+'[33m', escr+'[34m'];
+    colors = {
+        error: escr+'[31m',
+        warn: escr+'[33m',
+        info: escr+'[34m'
+    },
+    savedLevel;
 
-// ECMAScript getter and setter syntax
-logger.__defineGetter__('log_level', function(){
-    return logLevels[this.selfLogLevel];
-});
+function canLog(test) {
+    // If our log level has changed, build a new permissions cache
+    if(savedLevel !== logger.level) {
+        savedLevel = logger.level;
+        var index = logLevels.indexOf(logger.level);
+        for (var x = 0, level; level = logLevels[x]; x++) {
+            permissions[level] = (x >= index);
+        }
+    }
+    return permissions[test];
+}
 
-logger.__defineSetter__('log_level', function(arg){
-    this.selfLogLevel = logLevels.indexOf(arg);
-    var em = function() {};
-    
-    // Create a funciton for each level except silent
-    for(var x=1, l=logLevels.length; x<l; x++) {
-        this[logLevels[x]] = this.selfLogLevel >= x ? function(y){return function() {
-            var args = Array.prototype.slice.call(arguments), l = args.length;
+// Create a funciton for each level except silent
+for(var x = 1, logLevel; logLevel = logLevels[x++];) {
+    (function(logLevel) {
+        logger[logLevel] = function() {
+            // Can we log at this level?
+            if(!canLog(logLevel)) {
+                return;
+            }
+            var args = Array.prototype.slice.call(arguments), 
+                l = args.length,
+                context = logger.sync ?
+                    process[logLevel === 'error' || logLevel === 'warn' ? 'stderr' : 'stdout'] :
+                    console[logLevel],
+                func = logger.sync ? context.write : context;
+
+            // Auto inspect each object passed in
             while(l--) {
                 if(args[l] && typeof args[l] == 'object' && args[l].toString() == '[object Object]') {
-                    args[l] = sys.inspect(args[l]);
+                    args[l] = sys.inspect(args[l], false, true, !!this.color);
                 }
             }
-            sys.log.call(this, (this.color ? (colors[y-1] || '') + logLevels[y].toUpperCase() + reset :
-            logLevels[y].toUpperCase())+': '+args.join(' '));
-        };}(x) : em;
-    }
-});
+            func.call(context, (logger.color ? (colors[logLevel] || '') + logLevel.toUpperCase() + reset :
+                logLevel.toUpperCase()) + ': ' +args.join(' ') + (logger.sync ? '\n' : ''));
+        };
+    })(logLevel);
+}
 
 // Default to colorful warn
-logger.log_level = 'warn';
+logger.level = 'warn';
 logger.color = true;
+logger.sync = true;
