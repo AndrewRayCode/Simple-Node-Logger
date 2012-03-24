@@ -1,5 +1,5 @@
 var sys = require('util'),
-    logLevels = ['silent', 'info', 'warn', 'error'],
+    logLevels = ['info', 'warn', 'error', 'silent'],
     permissions = {},
     logger = module.exports,
     // Shell color escape codes
@@ -26,7 +26,7 @@ function canLog(test) {
 }
 
 // Create a funciton for each level except silent
-for(var x = 1, logLevel; logLevel = logLevels[x++];) {
+for(var x = 0, l = logLevels.length - 1; x < l; x++) {
     (function(logLevel) {
         logger[logLevel] = function() {
             // Can we log at this level?
@@ -49,7 +49,7 @@ for(var x = 1, logLevel; logLevel = logLevels[x++];) {
             func.call(context, (logger.color ? (colors[logLevel] || '') + logLevel.toUpperCase() + reset :
                 logLevel.toUpperCase()) + ': ' +args.join(' ') + (logger.sync ? '\n' : ''));
         };
-    })(logLevel);
+    })(logLevels[x]);
 }
 
 // Default to colorful warn
