@@ -3,6 +3,10 @@
 A logger which colorizes output, auto-inspects objects, and correctly writes to stdout or stderror.
 Can be marked as sync (blockingly writes to stdout/err) or async (uses console.log, not synchronous).
 
+Why use `sync` vs `async`? Sync gaurantees the call will be outputted. If using `async` and your Node program
+crashes unexpectedly, the `console.log` commands may not be executed. I have not done any speed benchmarkings
+between the two, though. Disclaimin' that.
+
 ### Install:
     npm install simple-logger
 
