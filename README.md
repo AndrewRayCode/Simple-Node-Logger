@@ -49,5 +49,8 @@ Objects are auto-inspected
     log.warn({foo: 'bar', duck: 'pie'});
     WARN: { foo: 'bar', duck: 'pie' }
  
+###: License: 
+Simple-Node-Logger is placed in the public domain (http://creativecommons.org/publicdomain/zero/1.0/). 
+
 ### Neato: 
 ![Screenshot of colorful logger output](http://andrewray.me/stuff/log-colors.png)
